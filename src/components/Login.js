@@ -4,6 +4,7 @@ import { setUserInfo } from '../utils/userSlice';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -39,6 +40,7 @@ const handelFormSubmit = async (event) => {
           alert("Login Successful.");
           window.localStorage.setItem("token", data.data)
           window.location.href='./UserDetails';
+ 
         }
     });
     

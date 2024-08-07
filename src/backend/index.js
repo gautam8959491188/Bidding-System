@@ -23,30 +23,18 @@ app.listen(5000, ()=>{
 require("./userDetails");
 require("./itemDetails");
 require("./bidDetails");
+require("./largestBidDetails")
+require("./bidRequestDetails");
+require("./requestedItemDetails")
+require("./bidStatus")
 const Item = mongoose.model("ItemInfo");
 const User = mongoose.model("UserInfo");
 const Bid = mongoose.model("BidInfo")
+const LargestBid = mongoose.model("LargestBidInfo");
+const BidRequest = mongoose.model("BidRequestDetailsInfo");
+const RequestedItem = mongoose.model("RequestedItemInfo");
+const BidStatus = mongoose.model("BidStatusDetailsInfo");
 
-app.post("/register",async(req,res)=>{
-    const {userName,email,password, UserType} = req.body;
-    const oldUser = await User.findOne({ userName });
-    const encryptedPassword = await bcrypt.hash(password,10)
-    try {
-        if(oldUser)
-        {
-            return res.json({error: "Uesr already exists."})
-        }
-        await User.create({
-            userName: userName,
-            email: email,
-            password: encryptedPassword,
-            UserType: UserType,
-        })
-        res.send({status: "Ok"});
-    } catch (error) {
-        res.send({status: error})
-    }
-})
 
 app.post("/login-user",async (req,res)=>{
     const {email, password} = req.body;
@@ -171,3 +159,230 @@ app.post("/getItemBid",async (req,res)=>{
     return res.json({status: "error"})
     }
 })
+app.post("/register",async(req,res)=>{
+    const {userName,email,password, UserType} = req.body;
+    const oldUser = await User.findOne({ userName });
+    const encryptedPassword = await bcrypt.hash(password,10)
+    try {
+        if(oldUser)
+        {
+            return res.json({error: "Uesr already exists."})
+        }
+        await User.create({
+            userName: userName,
+            email: email,
+            password: encryptedPassword,
+            UserType: UserType,
+        })
+        res.send({status: "Ok"});
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+app.post("/largestBid",async(req,res)=>{
+    const {userName, bidAmount, itemName, itemImage} = req.body;
+    const oldItem = await LargestBid.findOne({itemName})
+    try {
+        if(oldItem)
+        {   
+           const data =  await LargestBid.updateOne({itemName: itemName},{$set:{userName: userName, bidAmount: bidAmount}})
+            res.send({status: "Ok", data: data});
+        }
+        else{
+        await LargestBid.create({
+            itemName: itemName,
+            bidAmount: bidAmount,
+            userName: userName,
+            itemImage: itemImage,
+        })
+        res.send({status: "Ok"});
+    }
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.get("/getAllLargestBid",async (req,res)=>{
+    try {
+        const allItem = await LargestBid.find({});
+        res.send({status: "Ok", data: allItem});
+    
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.post("/getLargestBid",async(req,res)=>{
+    const {itemName} = req.body;
+
+    try {
+        const data = await LargestBid.findOne({itemName})
+        res.send({status: "oK", data: data});
+
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/setInitialBid",async(req,res)=>{
+    const {userName, bidAmount, itemName, itemImage} = req.body;
+    try {
+
+        await LargestBid.create({
+            itemName: itemName,
+            bidAmount: bidAmount,
+            userName: userName,
+            itemImage: itemImage,
+        })
+        res.send({status: "Ok"});
+        
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.post("/bidRequest",async (req, res)=>{
+    const {userEmail, requestedItem} = req.body;
+    try {
+        await BidRequest.create({
+            userEmail: userEmail,
+            itemName: requestedItem,
+        })
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.post("/getAllRequest",async (req, res)=>{
+    const {userEmail} = req.body;
+    try {
+        const data = await BidRequest.findOne({ userEmail: userEmail})
+        res.send({status: "Ok", data: data});
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+app.post("/requestedItemInfo",async(req,res)=>{
+    const {itemName} = req.body;
+    try {
+
+        const data = await Item.findOne({ itemName: itemName })
+        res.send({status: "Ok", data: data});;
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/getRequestedData",async(req,res)=>{
+    const {itemName} = req.body;
+    try {
+
+        const data = await Item.findOne({ itemName: itemName })
+        res.send({status: "Ok", data: data});;
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+
+app.post("/requestedItemDelete",async (req,res)=>{
+    const { itemName } = await req.body;
+    console.log(itemName)
+    try {
+       await BidRequest.deleteOne(
+        {itemName: itemName}
+    )
+       res.send({status: "Ok", data: "Item Deleted"})
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+app.post("/getRequestedItem",async(req,res)=>{
+    const {itemName,price,description, image} = req.body;
+    try {
+
+        await RequestedItem.create({
+            itemName: itemName,
+            price: price,
+            description: description,
+            image: image,
+        })
+        res.send({status: "Ok"});
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/setRequestedItem",async(req,res)=>{
+    const {itemName} = req.body;
+    try {
+
+        const data = await RequestedItem.findOne({ itemName: itemName })
+        res.send({status: "Ok", data: data});;
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/requestedItemData",async(req,res)=>{
+    const {itemName} = req.body;
+    try {
+
+        const data = await Item.findOne({ itemName: itemName })
+        res.send({status: "Ok", data: data});;
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+
+app.post("/setStatus",async(req,res)=>{
+    const {bidStatus} = req.body;
+    try {
+
+       const data =  await BidStatus.create({
+            status: bidStatus,
+        })
+        res.send({status: "Ok",data: data});
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/getStatus",async(req,res)=>{
+    const {bidStatus} = req.body;
+    try {
+
+       const data =  await BidStatus.findOne({
+            status: bidStatus,
+        })
+        res.send({status: "Ok",data: data});
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/getWinningItem",async (req,res)=>{
+    const {itemName} = req.body;
+   
+    try {
+        const data = await LargestBid.findOne({
+            itemName: itemName
+        });
+        res.send({status: "Ok", data: data});
+    
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
+
+
+
+
+
+

@@ -41,6 +41,26 @@ const AddItem = () => {
       
         event.preventDefault();
         alert("Item Added")
+
+        fetch("http://localhost:5000/setInitialBid",{
+          method:"POST",
+          crossDomain: true,
+          headers:{
+              "Content-Type" : "application/json",
+              Accept: "application/json",
+              "Access-Control-Allow-Origin": "*"
+          },
+          body: JSON.stringify({
+              itemName: itemName,
+              bidAmount: price,
+              userName: "Admin",
+              itemImage: image,
+          })
+      })
+      .then((res)=>res.json())
+      .then((data)=>{
+          console.log(data, "initialBidAdded");  
+      });
         window.location.href="./UserDetails"
         
     }

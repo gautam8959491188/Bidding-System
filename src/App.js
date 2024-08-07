@@ -11,8 +11,9 @@ import store from './utils/Store';
 import BidPage from './components/BidPage';
 import LeaderBoard from './components/LeaderBoard';
 import { useState } from 'react';
+import ShowResults from './components/ShowResults';
 
-import Footer from './components/Footer';
+
 
 
 function App() {
@@ -46,6 +47,10 @@ function App() {
     {
       path: "/LeaderBoard",
       element: <LeaderBoard />
+    },
+    {
+      path: "/ShowResults",
+      element: <ShowResults />
     }
 
   ]);
