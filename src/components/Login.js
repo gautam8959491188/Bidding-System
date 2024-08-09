@@ -9,6 +9,29 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const deleteData = () => {
+    fetch("http://localhost:5000/deleteBidInfo",{
+      method:"POST",
+      crossDomain: true,
+      headers:{
+          "Content-Type" : "application/json",
+          Accept: "application/json",
+          "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify({
+      itemName: "Microwave Oven",     
+      })
+  })
+  .then((res)=>res.json())
+  .then((data)=>{
+    alert(data.data);
+   
+     
+  });
+  }
+
+
+
 const handelInputChange = (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setFormData({
@@ -42,6 +65,9 @@ const handelFormSubmit = async (event) => {
           window.location.href='./UserDetails';
  
         }
+        else{
+          alert("Wrong Username or Password.")
+        }
     });
     
     event.preventDefault();
@@ -64,6 +90,7 @@ const handelFormSubmit = async (event) => {
             </div>
       </div>
       </div>
+      {/* <button onClick={()=>{deleteData()}}>Delete Data</button> */}
     </form>
     
   )

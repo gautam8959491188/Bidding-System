@@ -3,15 +3,12 @@ import UserItemCard from './UserItemCard';
 import { useDispatch } from 'react-redux';
 import { setUserInfo } from '../utils/userSlice';
 import RequestSection from './RequestSection';
+import CartSection from './CartSection';
 
 const ShowDetails = ({data}) => {
   const [itemData, setItemData] = useState([]);    
   const [showRequest, setShowRequest] = useState(false);
-  const [requestData, setRequestData] = useState({});
-  const [itemName, setItemName] = useState("");
-  const [itemInfo, setItemInfo] = useState({});
   const [showMessage, setShowMessage] = useState(false);
-
 
     const logout = () => {
         window.localStorage.clear();
@@ -23,6 +20,12 @@ const ShowDetails = ({data}) => {
       getAllItem();
      
     },[])
+
+    const home = ()=>{
+      setShowRequest(false);
+      setShowMessage(true);
+    }
+
     const dispatch = useDispatch();
     dispatch(setUserInfo({
       userName: data.userName
@@ -56,6 +59,7 @@ const ShowDetails = ({data}) => {
    });
     }
 
+
     
 
 
@@ -75,22 +79,33 @@ const ShowDetails = ({data}) => {
     </div>
     <center><h1 class="mb-2 text-2xl font-extrabold dark:text-white">Items<span class="bg-blue-100 text-blue-800 text-xl font-semibold me-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-2">List</span></h1></center>
     </div>
-    <button className='border border-black m-2 p-1' onClick={()=>{setShowRequest(true)}}>Show Bid Requests</button>
+    <button className='relative inline-flex items-center justify-center p-2 mb-2 me-2 mt-2 ml-2 overflow-hidden  font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 ' onClick={()=>{setShowRequest(true)}}>Show Bid Requests</button>
+
+  
 
     { showRequest? <div>
+
+
       {
         <div>
             <RequestSection data={data}/>
          </div>     
       }
-      <button className='border border-black m-2 p-1' onClick={()=>{setShowRequest(false)}}>Home</button></div>:
+
+
+      <button className='m-2 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800' onClick={()=>{home()}}>Home</button></div>:
 
         <div>
         {
           showMessage? <h1>No Data to Present.</h1> :
             <UserItemCard itemData={itemData} />
         }
+
+       
+
         </div>
+
+  
 
 
 

@@ -11,11 +11,9 @@ const BidPage = () => {
     
 
     const items = useSelector(store=> store.item.items)
-    const bidding = useSelector(store=> store.bid.bids)
     const [bid, setBid] = useState(0);
     const user1 = useSelector(store=> store.user.userInfo)
     const [userBid, setUserBid] = useState([]);
-    const bigBid = useSelector(store=> store.lbid.bidInfo); 
     const [askingPrice, setAskingPrice] = useState(items.price);
     const dispatch = useDispatch();
     const [timer, setTimer] = useState(30);
@@ -37,7 +35,7 @@ const BidPage = () => {
             var time = window.localStorage.getItem("timer");
             -- time;
             setTimer(time);
-            console.log("Timer: "+timer);
+           
             window.localStorage.clear("timer");
         },1000)
 
@@ -61,7 +59,7 @@ const BidPage = () => {
             })
             .then((res)=>res.json())
             .then((data)=>{
-                console.log(data.data)
+                
                 setUserBid(data.data)
             });
             fetch("http://localhost:5000/getLargestBid",{
@@ -78,9 +76,9 @@ const BidPage = () => {
             })
             .then((res)=>res.json())
             .then((data)=>{
-                console.log(data, "largestBidSend");
+                
                 setAskingPrice(data.data.bidAmount);
-                console.log(data.data.bidAmount);
+                
             });
 
 
@@ -89,16 +87,14 @@ const BidPage = () => {
     return ()=> clearInterval(i)
     },[])
 
-    // const ItemName = items.itemName;
-    // const UserName = user1.userName
-    // window.localStorage.setItem(ItemName,largestBid1);
-    // const bigBid = window.localStorage.getItem(ItemName)
-    // window.localStorage.setItem("name", user1.userName);
-    // const name = window.localStorage.getItem("name");
+    const logout = () => {
+        window.localStorage.clear();
+        window.location.href='./'
+    }
+
     
     window.localStorage.setItem("winningItem", items.itemName)
 
-   
   return (
     <>
   <div className='flex'>
@@ -120,8 +116,6 @@ const BidPage = () => {
     <form className=' border border-black p-2 w-96 ml-52 mt-2 rounded-lg' onSubmit={(e)=>{
         e.preventDefault(); 
         setBid(0);
-        alert(bid)
-
         if(bid <= askingPrice)
         {
             alert("Bid must be higher. Last bid was "+askingPrice)
@@ -154,7 +148,7 @@ const BidPage = () => {
             })
             .then((res)=>res.json())
             .then((data)=>{
-                console.log(data, "bidSend");
+             console.log(data, "bidSend");
             });
             
 
@@ -188,7 +182,7 @@ const BidPage = () => {
     
     
     </div>
-    <center><Link to="/UserDetails"><button className="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 mt-4">Home</button></Link></center>
+    <center><button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={()=>{logout()}}>Log Out</button></center>
     {
         showTimer? <center><span>Timer: <b>{timer}</b></span></center>: null
          

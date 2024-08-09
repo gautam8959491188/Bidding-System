@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ShowDetails from './ShowDetails';
 import AdminPanel from './AdminPanel';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUserInfo } from '../utils/userSlice';
+
 
 const UserDetails = () => {
   const [userData, setUserData] = useState("");
@@ -22,8 +21,6 @@ const UserDetails = () => {
       .then((res)=>res.json())
       .then((data)=>{
           console.log(data, "userRegister");
-          alert(data.data.userName);
-          alert(data.data.email);
           setUserData(data.data); 
       });
     },[]);

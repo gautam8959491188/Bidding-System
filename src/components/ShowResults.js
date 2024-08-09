@@ -25,9 +25,31 @@ const ShowResults = () => {
         .then((data)=>{
           console.log(data, "largetBiddedItemData");
           setWinner(data.data);
+          alert(data.data.userName)
+          fetch("http://localhost:5000/setWinner",{
+            method:"POST",
+            crossDomain: true,
+            headers:{
+                "Content-Type" : "application/json",
+                Accept: "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            body: JSON.stringify({
+            itemName:  data.data.itemName,
+            userName: data.data.userName,
+            bidAmmount: data.data.bidAmmount,
+            itemImage:  data.data.itemImage
+            })
+        }).then((res)=>res.json())
+        .then((data)=>{
+          console.log(data, "WinnerData");
+        })
+         });
 
-          
-       });
+
+
+
+       
     }
   return (
     <div>

@@ -25,8 +25,9 @@ require("./itemDetails");
 require("./bidDetails");
 require("./largestBidDetails")
 require("./bidRequestDetails");
-require("./requestedItemDetails")
-require("./bidStatus")
+require("./requestedItemDetails");
+require("./bidStatus");
+require("./winnerDetails");
 const Item = mongoose.model("ItemInfo");
 const User = mongoose.model("UserInfo");
 const Bid = mongoose.model("BidInfo")
@@ -34,6 +35,7 @@ const LargestBid = mongoose.model("LargestBidInfo");
 const BidRequest = mongoose.model("BidRequestDetailsInfo");
 const RequestedItem = mongoose.model("RequestedItemInfo");
 const BidStatus = mongoose.model("BidStatusDetailsInfo");
+const Winner = mongoose.model("WinnerInfo");
 
 
 app.post("/login-user",async (req,res)=>{
@@ -374,6 +376,46 @@ app.post("/getWinningItem",async (req,res)=>{
         });
         res.send({status: "Ok", data: data});
     
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.post("/setWinner",async(req,res)=>{
+    const {itemName,userName,bidAmount, itemImage} = req.body;
+    
+    try {
+
+        const data = await Winner.create({
+            itemName: itemName,
+            userName: userName,
+            bidAmount: bidAmount,
+            itemImage: itemImage,
+        })
+        res.send({status: "Ok", data: data});
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+app.post("/getWinner",async(req,res)=>{
+    const {userName} = req.body;
+    
+    try {
+
+        const data = await Winner.find({userName: userName})
+        res.send({status: "Ok", data: data});
+    } catch (error) {
+        res.send({status: error})
+    }
+})
+
+
+app.post("/deleteBidInfo",async (req,res)=>{
+    const { itemName } = await req.body;
+    try {
+       await Bid.deleteMany({itemName: itemName})
+       res.send({status: "Ok", data: "Item Deleted"})
     } catch (error) {
         console.log(error)
     }

@@ -1,7 +1,6 @@
 import React from 'react'
 
 const BidPane = ({bid}) => {
-  //alert(bid.bidAmount)
   return (
     <div>
          <div className='flex items-center shadow-sm'>
